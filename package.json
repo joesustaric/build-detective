@@ -1,0 +1,70 @@
+{
+  "name": "pipeline-log-analyser",
+  "displayName": "Pipeline Log Analyser",
+  "description": "Inspect CI/CD pipeline logs and diagnose build failures without leaving your editor — supports VS Code and Cursor",
+  "version": "0.12.0",
+  "publisher": "joesustaric",
+  "icon": "images/icon.png",
+  "engines": {
+    "vscode": "^1.105.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "onWorkspaceContains:.git"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "pipeline-log-analyser.openPanel",
+        "title": "Open Pipeline Log Analyser Panel"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "pipelineLogAnalyserSidebar",
+          "title": "Pipeline Log Analyser",
+          "icon": "images/icon-activity-bar.svg"
+        }
+      ]
+    },
+    "views": {
+      "pipelineLogAnalyserSidebar": [
+        {
+          "id": "pipelineLogAnalyserView",
+          "name": "Jobs",
+          "icon": "$(rocket)",
+          "type": "webview"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "pnpm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "pnpm run compile && pnpm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test",
+    "test:ci": "xvfb-run -a pnpm test",
+    "generate-icon": "node scripts/generate-icon.js"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^26.0.0",
+    "@types/vscode": "^1.105.0",
+    "@typescript/native": "npm:typescript@^7.0.2",
+    "@vscode/test-cli": "^0.0.15",
+    "@vscode/test-electron": "^3.0.0",
+    "@vscode/vsce": "^3.9.1",
+    "eslint": "^10.0.0",
+    "sharp": "^0.35.0",
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
+    "typescript-eslint": "^8.59.2"
+  },
+  "packageManager": "pnpm@11.13.0"
+}

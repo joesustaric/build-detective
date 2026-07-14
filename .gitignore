@@ -1,0 +1,11 @@
+out
+dist
+node_modules
+.vscode-test/
+*.vsix
+.github/skills
+.DS_Store
+package-lock.json
+pnpm-debug.log*
+yarn.lock
+docs/superpowers/
