@@ -1,0 +1,9 @@
+# Defer the provider interface until a second provider exists
+
+Provider-specific code is confined to a directory, `src/buildkite/`, and that is the whole of the seam — there is no `Provider` interface, no registry, and no shared shape that a second CI system would implement. This is deliberate. You cannot design a two-provider abstraction from one provider without inventing the second one in your head, and the interface you invent that way is reliably wrong: it encodes Buildkite's job model, its log format, and its auth flow as though they were universal. The second provider is what teaches you where the seam actually goes, so the directory is a placeholder for a contract we are refusing to guess at rather than a contract we forgot to write.
+
+The cost is that "add a provider" is currently much larger than it sounds. `src/buildkite/module.ts` is simultaneously the Buildkite adapter and the entire sidebar UI, polling loop, status bar, settings screen, and message router, so a second provider means extracting all of that first — and that extraction is the work this decision defers, not work it avoids. Other Buildkite specifics have leaked outward too: the emoji shortcode map in `src/utils.ts` is documented as covering Buildkite job names, and the analysis prompt hard-codes "These are Buildkite job errors".
+
+## Consequences
+
+Until the second provider lands, no document should claim the seam exists. ADR 0001's naming argument rests on the extension being provider-agnostic in structure, which is true of the directory layout and not yet true of the code, and `CONTEXT.md` defines a Provider as "exposing the same shape to the rest of the extension" — a shape nothing declares. Both have been corrected to describe the directory convention rather than an interface, so that a reader who goes looking for the abstraction is not surprised to find nothing.

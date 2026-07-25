@@ -19,7 +19,7 @@ The recurring *definition* that Builds are created from. Pipelines don't fail; t
 _Avoid_: Using "pipeline" to mean an individual Build
 
 **Provider**:
-A CI system this extension integrates with, e.g. Buildkite. Each lives behind its own module under `src/`, exposing the same shape to the rest of the extension.
+A CI system this extension integrates with, e.g. Buildkite. Each lives in its own directory under `src/`. There is deliberately no shared interface yet — see ADR 0007.
 _Avoid_: Integration, backend, source, CI system
 
 ### Product concepts
