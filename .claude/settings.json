@@ -44,7 +44,9 @@
       "Bash(op vault *)",
       "Bash(op item *)",
       "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\([f.get\\('label'\\) for f in d.get\\('fields',[]\\)]\\)\")",
-      "Bash(git fetch *)"
+      "Bash(git fetch *)",
+      "Bash(node -p \"require\\('./package.json'\\).version\")",
+      "Bash(gh release *)"
     ]
   }
 }

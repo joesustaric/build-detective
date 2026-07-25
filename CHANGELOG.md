@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- No functional changes; verifying the release pipeline end-to-end (version bump, tag, `.vsix` build, VS Code Marketplace and Open VSX publish, GitHub Release).
+
 ## [0.14.0] - 2026-07-25
 
 ### Added
