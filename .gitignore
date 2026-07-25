@@ -9,3 +9,4 @@ package-lock.json
 pnpm-debug.log*
 yarn.lock
 docs/superpowers/
+.claude/settings.local.json
