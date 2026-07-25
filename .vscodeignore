@@ -15,6 +15,10 @@ package-lock.json
 .mise.toml
 vsc-extension-quickstart.md
 CONTRIBUTING.md
+AGENTS.md
+CONTEXT.md
+renovate.json
+pnpm-workspace.yaml
 node_modules/**
 .gitignore
 **/*.test.js
