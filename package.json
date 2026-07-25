@@ -2,7 +2,7 @@
   "name": "build-detective",
   "displayName": "Build Detective for Buildkite",
   "description": "Find out why your build broke without leaving your editor — inspects failed CI jobs and explains them using Copilot, Cursor, or Claude",
-  "version": "0.14.0",
+  "version": "0.14.1",
   "publisher": "joesustaric",
   "icon": "images/icon.png",
   "license": "MIT",
