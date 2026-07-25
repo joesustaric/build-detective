@@ -29,7 +29,7 @@ fi
 
 # ── Package ───────────────────────────────────────────────────────────────────
 VERSION=$(node -p "require('$REPO_ROOT/package.json').version")
-VSIX_FILE="$REPO_ROOT/pipeline-log-analyser-$VERSION.vsix"
+VSIX_FILE="$REPO_ROOT/build-detective-$VERSION.vsix"
 
 info "Packaging v$VERSION..."
 "$REPO_ROOT/node_modules/.bin/vsce" package --no-dependencies --out "$VSIX_FILE"

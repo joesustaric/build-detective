@@ -73,20 +73,20 @@ export class BuildkiteSidebarViewProvider
   constructor(private readonly context: vscode.ExtensionContext) {
     // Register command (no-op, kept for compatibility)
     const openPanelCommand = vscode.commands.registerCommand(
-      'pipeline-log-analyser.openPanel',
+      'build-detective.openPanel',
       () => {
         vscode.window.showInformationMessage(
-          'The Pipeline Log Analyser UI is now in the sidebar panel.',
+          'The Build Detective UI is now in the sidebar panel.',
         );
       },
     );
     context.subscriptions.push(openPanelCommand);
 
     const openSidebarCommand = vscode.commands.registerCommand(
-      'pipeline-log-analyser.openSidebar',
+      'build-detective.openSidebar',
       async () => {
         await vscode.commands.executeCommand(
-          'pipelineLogAnalyserView.focus',
+          'buildDetectiveView.focus',
         );
       },
     );
@@ -95,7 +95,7 @@ export class BuildkiteSidebarViewProvider
     // Register sidebar view provider (must match package.json id)
     context.subscriptions.push(
       vscode.window.registerWebviewViewProvider(
-        'pipelineLogAnalyserView',
+        'buildDetectiveView',
         this,
       ),
     );
@@ -105,11 +105,11 @@ export class BuildkiteSidebarViewProvider
 
     // Initialize status bar item
     this.statusBar = vscode.window.createStatusBarItem(
-      'pipelineLogAnalyser.status',
+      'buildDetective.status',
       vscode.StatusBarAlignment.Right,
       100,
     );
-    this.statusBar.command = 'pipeline-log-analyser.openSidebar';
+    this.statusBar.command = 'build-detective.openSidebar';
     this.setStatusBarMessage('Setting up analyzer...', 'loading');
   }
 
@@ -591,7 +591,7 @@ export class BuildkiteSidebarViewProvider
           script-src ${cspSource} 'nonce-${nonce}';
         ">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Pipeline Log Analyser</title>
+      <title>Build Detective</title>
       ${this.webviewResourceUris.css.map((uri) => `<link href="${uri}" rel="stylesheet" />`).join('')}
       ${this.webviewResourceUris.js.map((uri) => `<script nonce="nonce-${nonce}" src="${uri}"></script>`).join('')}
     </head>

@@ -1,12 +1,12 @@
-# Pipeline Log Analyser
+# Build Detective
 
 ## 🚀 Overview
 
-A VS Code and Cursor extension for inspecting CI/CD pipeline logs and diagnosing build failures without leaving your editor.
+A VS Code and Cursor extension that tells you why your build broke, without leaving your editor. It tracks CI results for the branch you're on and hands failed jobs to an AI assistant for explanation.
 
 > **Integrations:** The first supported CI/CD system is [Buildkite](https://buildkite.com/).
 
-Uses VS Code's Language Model API (Copilot) to analyse failed job logs and surface actionable insights. Cursor users: AI analysis may work via the Copilot extension or Cursor's native AI — verification pending.
+Analysis is delegated to whichever AI assistant you already have — Copilot or Cursor via the editor's Language Model API, or Claude via the Claude Code extension or the `claude` CLI. If none is available, the prompt is copied to your clipboard.
 
 ## 📦 Installing the Extension
 
@@ -14,12 +14,12 @@ Uses VS Code's Language Model API (Copilot) to analyse failed job logs and surfa
 
 **Prerequisites (both editors):**
 - A [Buildkite API token](https://buildkite.com/user/api-access-tokens) with read access
-- AI log analysis requires the GitHub Copilot extension. Cursor users: this feature may also work via Cursor's native AI — verification pending.
+- AI analysis requires at least one assistant: GitHub Copilot, Cursor's built-in AI, the Claude Code extension, or the `claude` CLI on your `PATH`.
 
 ### VS Code
 
-1. Go to the [latest GitHub Release](https://github.com/joesustaric/pipeline-logs-analyser/releases/latest)
-2. Download the `.vsix` file (e.g. `pipeline-log-analyser-0.3.0.vsix`)
+1. Go to the [latest GitHub Release](https://github.com/joesustaric/build-detective/releases/latest)
+2. Download the `.vsix` file (e.g. `build-detective-0.3.0.vsix`)
 3. Open the **Extensions** view (`Cmd+Shift+X`)
 4. Click the `...` menu (top-right of the Extensions panel) → **Install from VSIX...**
 5. Select the downloaded `.vsix` file
@@ -27,15 +27,15 @@ Uses VS Code's Language Model API (Copilot) to analyse failed job logs and surfa
 Or install via the terminal:
 
 ```bash
-code --install-extension pipeline-log-analyser-X.Y.Z.vsix
+code --install-extension build-detective-X.Y.Z.vsix
 ```
 
-Once installed, open a repository. The **Pipeline Log Analyser** icon will appear in the Activity Bar. You'll be prompted for your Buildkite API token on first use.
+Once installed, open a repository. The **Build Detective** icon will appear in the Activity Bar. You'll be prompted for your Buildkite API token on first use.
 
 ### Cursor
 
-1. Go to the [latest GitHub Release](https://github.com/joesustaric/pipeline-logs-analyser/releases/latest)
-2. Download the `.vsix` file (e.g. `pipeline-log-analyser-0.3.0.vsix`)
+1. Go to the [latest GitHub Release](https://github.com/joesustaric/build-detective/releases/latest)
+2. Download the `.vsix` file (e.g. `build-detective-0.3.0.vsix`)
 3. Open the **Extensions** view (`Cmd+Shift+X`)
 4. Click the `...` menu (top-right of the Extensions panel) → **Install from VSIX...**
 5. Select the downloaded `.vsix` file
@@ -43,10 +43,10 @@ Once installed, open a repository. The **Pipeline Log Analyser** icon will appea
 Or install via the terminal:
 
 ```bash
-cursor --install-extension pipeline-log-analyser-X.Y.Z.vsix
+cursor --install-extension build-detective-X.Y.Z.vsix
 ```
 
-Once installed, open a repository. The **Pipeline Log Analyser** icon will appear in the Activity Bar. You'll be prompted for your Buildkite API token on first use.
+Once installed, open a repository. The **Build Detective** icon will appear in the Activity Bar. You'll be prompted for your Buildkite API token on first use.
 
 ## 🛠️ Technology Stack
 
@@ -64,7 +64,7 @@ Once installed, open a repository. The **Pipeline Log Analyser** icon will appea
 - [VS Code](https://code.visualstudio.com/) installed
 - [mise](https://mise.jdx.dev/getting-started.html) for managing Node.js versions (recommended)
 - A [Buildkite API token](https://buildkite.com/user/api-access-tokens) with read access
-- GitHub Copilot extension enabled in VS Code (for AI analysis)
+- An AI assistant for analysis: GitHub Copilot, Cursor's built-in AI, the Claude Code extension, or the `claude` CLI
 
 ### Install mise (environment manager)
 
@@ -84,8 +84,8 @@ See the [mise getting started guide](https://mise.jdx.dev/getting-started.html) 
 ### Clone & Install Dependencies
 
 ```bash
-git clone git@github.com:joesustaric/pipeline-logs-analyser.git
-cd pipeline-logs-analyser
+git clone git@github.com:joesustaric/build-detective.git
+cd build-detective
 
 mise install   # install Node.js and pnpm versions defined in .mise.toml
 pnpm install   # install packages
@@ -103,7 +103,7 @@ pnpm lint      # Run ESLint
 ### Running the Extension Locally
 
 - Call Buildkite API to get jobs related to opened branch
-- Ask Copilot agent to analyse an error from a failed job
+- Ask your AI assistant to analyse an error from a failed job
 
 ### Development
 
@@ -112,7 +112,7 @@ pnpm lint      # Run ESLint
 1. Run `pnpm run compile`.
 1. Press `F5` or click **Run and Debug** to launch the extension host.
 1. In the new VS Code window, open a repository on a branch with Buildkite builds.
-1. Open the **Pipeline Log Analyser** panel in the Activity Bar sidebar.
+1. Open the **Build Detective** panel in the Activity Bar sidebar.
 1. Enter your Buildkite API token when prompted.
 
 #### Cursor
@@ -120,14 +120,14 @@ pnpm lint      # Run ESLint
 1. Run `pnpm run compile`.
 1. Press `F5` or click **Run and Debug** to launch the extension host.
 1. In the new Cursor window, open a repository on a branch with Buildkite builds.
-1. Open the **Pipeline Log Analyser** panel in the Activity Bar sidebar.
+1. Open the **Build Detective** panel in the Activity Bar sidebar.
 1. Enter your Buildkite API token when prompted.
 
 ## ✨ Features
 
 - **Buildkite build status** — automatically fetches builds for the currently checked-out branch
-- **Auto-refresh** — polls Buildkite every 10 seconds and updates on branch changes
-- **AI log analysis** — click **Analyze** on any failed job to get an AI-powered explanation via VS Code's Language Model API (Copilot)
+- **Auto-refresh** — polls Buildkite every 20 seconds and updates on branch changes
+- **AI failure analysis** — click **Analyze** on any failed job to get an AI-powered explanation via Copilot, Cursor, or Claude
 - **Direct links** — open builds directly in the Buildkite web UI from the sidebar
 
 ## 🔨 Building the Extension
@@ -139,7 +139,7 @@ pnpm lint      # Run ESLint
 ```bash
 pnpm compile
 pnpm exec vsce package
-# Produces: pipeline-log-analyser-X.Y.Z.vsix
+# Produces: build-detective-X.Y.Z.vsix
 ```
 
 ## 🚢 Releasing

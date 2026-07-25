@@ -115,7 +115,7 @@ git -C "$REPO_ROOT" tag "v$NEW_VERSION"
 info "Committed and tagged v$NEW_VERSION locally"
 
 # ── Build .vsix ───────────────────────────────────────────────────────────────
-VSIX_FILE="$REPO_ROOT/pipeline-log-analyser-$NEW_VERSION.vsix"
+VSIX_FILE="$REPO_ROOT/build-detective-$NEW_VERSION.vsix"
 "$REPO_ROOT/node_modules/.bin/vsce" package --no-dependencies --out "$VSIX_FILE"
 
 info "Built $VSIX_FILE"
@@ -143,4 +143,4 @@ info "GitHub Release v$NEW_VERSION published"
 info "Cleaned up local .vsix"
 echo ""
 info "Release v$NEW_VERSION complete!"
-info "Install from: https://github.com/joesustaric/pipeline-logs-analyser/releases/tag/v$NEW_VERSION"
+info "Install from: https://github.com/joesustaric/build-detective/releases/tag/v$NEW_VERSION"
