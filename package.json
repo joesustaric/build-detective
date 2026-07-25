@@ -1,7 +1,7 @@
 {
-  "name": "pipeline-log-analyser",
-  "displayName": "Pipeline Log Analyser",
-  "description": "Inspect CI/CD pipeline logs and diagnose build failures without leaving your editor — supports VS Code and Cursor",
+  "name": "build-detective",
+  "displayName": "Build Detective for Buildkite",
+  "description": "Find out why your build broke without leaving your editor — inspects failed CI jobs and explains them using Copilot, Cursor, or Claude",
   "version": "0.12.0",
   "publisher": "joesustaric",
   "icon": "images/icon.png",
@@ -9,7 +9,15 @@
     "vscode": "^1.105.0"
   },
   "categories": [
-    "Other"
+    "Testing"
+  ],
+  "keywords": [
+    "buildkite",
+    "ci",
+    "continuous integration",
+    "build failure",
+    "pipeline",
+    "logs"
   ],
   "activationEvents": [
     "onStartupFinished",
@@ -19,23 +27,27 @@
   "contributes": {
     "commands": [
       {
-        "command": "pipeline-log-analyser.openPanel",
-        "title": "Open Pipeline Log Analyser Panel"
+        "command": "build-detective.openPanel",
+        "title": "Build Detective: Open Panel"
+      },
+      {
+        "command": "build-detective.openSidebar",
+        "title": "Build Detective: Open Sidebar"
       }
     ],
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "pipelineLogAnalyserSidebar",
-          "title": "Pipeline Log Analyser",
+          "id": "buildDetectiveSidebar",
+          "title": "Build Detective",
           "icon": "images/icon-activity-bar.svg"
         }
       ]
     },
     "views": {
-      "pipelineLogAnalyserSidebar": [
+      "buildDetectiveSidebar": [
         {
-          "id": "pipelineLogAnalyserView",
+          "id": "buildDetectiveView",
           "name": "Jobs",
           "icon": "$(rocket)",
           "type": "webview"
