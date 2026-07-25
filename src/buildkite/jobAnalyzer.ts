@@ -66,9 +66,22 @@ export type ResolvedJobErrors = {
   triggeredBuilds: BkBuild[];
 };
 
+/**
+ * The two Buildkite operations the triggered build chain walk needs.
+ * `BuildkiteClient` satisfies this structurally; tests pass an object literal.
+ */
+export type BuildLookup = {
+  getBuildDetails(
+    buildNumber: string,
+    pipelineSlug?: string
+  ): Promise<BkBuild | undefined>;
+  getJobLog(logUrl: string): Promise<string | undefined>;
+};
+
 export async function resolveJobErrors(
   currentBuild: BkBuild,
   jobId: string,
+  lookup: BuildLookup,
   triggeredBuildUrl?: string
 ): Promise<ResolvedJobErrors | null> {
   const triggeredBuilds: BkBuild[] = [currentBuild];
@@ -83,7 +96,7 @@ export async function resolveJobErrors(
       break;
     }
 
-    const build = await BuildkiteClient.instance?.getBuildDetails(
+    const build = await lookup.getBuildDetails(
       triggeredBuildRef.buildNumber,
       triggeredBuildRef.pipelineSlug
     );
@@ -91,19 +104,26 @@ export async function resolveJobErrors(
       break;
     }
 
-    failedJob = build.jobs?.find((job: BkJob) => job.state === 'failed');
-    if (!failedJob) {
+    // Resolve into a local before committing to it: a triggered build with no
+    // failed job of its own ends the chain, and the job above it stays the one
+    // we diagnose.
+    const nextFailedJob = build.jobs?.find(
+      (job: BkJob) => job.state === 'failed'
+    );
+    if (!nextFailedJob) {
       break;
     }
+
+    failedJob = nextFailedJob;
     triggeredBuilds.push(build);
-    triggeredBuildUrl = failedJob.triggered_build?.url;
+    triggeredBuildUrl = nextFailedJob.triggered_build?.url;
   }
 
   if (!failedJob) {
     return null;
   }
 
-  const jobLog = await BuildkiteClient.instance?.getJobLog(failedJob.rawJobUrl);
+  const jobLog = await lookup.getJobLog(failedJob.rawJobUrl);
   if (!jobLog) {
     return null;
   }
@@ -171,7 +191,11 @@ export class BuildkiteJobAnalyzer {
     });
   }
 
-  async open(currentBuild: BkBuild, triggeredBuildUrl?: string) {
+  async open(
+    currentBuild: BkBuild,
+    lookup: BuildLookup,
+    triggeredBuildUrl?: string
+  ) {
     if (!this.panel) {
       this.createPanel();
     } else {
@@ -189,6 +213,7 @@ export class BuildkiteJobAnalyzer {
     const result = await resolveJobErrors(
       currentBuild,
       this.jobId,
+      lookup,
       triggeredBuildUrl
     );
 

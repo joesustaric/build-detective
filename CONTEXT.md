@@ -18,6 +18,10 @@ _Avoid_: Step, task, stage
 The recurring *definition* that Builds are created from. Pipelines don't fail; the Builds they produce do. Rarely the right word in this codebase — reach for Build or Job first.
 _Avoid_: Using "pipeline" to mean an individual Build
 
+**Triggered build chain**:
+The sequence of Builds followed from a failed Job to the Build that actually broke. A failed Job may trigger another Build, whose own failed Job is the real cause; the Analysis walks down to the deepest failed Job and reads *its* log. When a Build in the chain has no failed Job of its own, the chain stops there and the Job above it is the one diagnosed.
+_Avoid_: Downstream builds, child builds, nested builds
+
 **Provider**:
 A CI system this extension integrates with, e.g. Buildkite. Each lives in its own directory under `src/`. There is deliberately no shared interface yet — see ADR 0007.
 _Avoid_: Integration, backend, source, CI system

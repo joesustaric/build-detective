@@ -257,7 +257,7 @@ export class BuildkiteSidebarViewProvider
           break;
 
         case 'analyzeJob':
-          if (this.repoName && this.currentBranch) {
+          if (this.repoName && this.currentBranch && this.buildkiteClient) {
             let newlyAddedPanel = false;
             if (!this.analyzerPanels[message.jobId]) {
               this.analyzerPanels[message.jobId] = new BuildkiteJobAnalyzer(
@@ -275,6 +275,7 @@ export class BuildkiteSidebarViewProvider
             } else {
               await this.analyzerPanels[message.jobId]!.open(
                 this.latestBuild!,
+                this.buildkiteClient,
                 message.triggeredBuildData === 'undefined'
                   ? undefined
                   : message.triggeredBuildData,
@@ -320,7 +321,7 @@ export class BuildkiteSidebarViewProvider
           break;
 
         case 'askIde':
-          if (this.repoName && this.currentBranch) {
+          if (this.repoName && this.currentBranch && this.buildkiteClient) {
             let newlyAddedPanel = false;
             if (!this.analyzerPanels[message.jobId]) {
               this.analyzerPanels[message.jobId] = new BuildkiteJobAnalyzer(
@@ -338,6 +339,7 @@ export class BuildkiteSidebarViewProvider
             } else {
               await this.analyzerPanels[message.jobId]!.open(
                 this.latestBuild!,
+                this.buildkiteClient,
                 message.triggeredBuildData === 'undefined'
                   ? undefined
                   : message.triggeredBuildData,
@@ -347,7 +349,7 @@ export class BuildkiteSidebarViewProvider
           break;
 
         case 'askClaude':
-          if (this.repoName && this.currentBranch) {
+          if (this.repoName && this.currentBranch && this.buildkiteClient) {
             try {
               const triggeredBuildUrl =
                 message.triggeredBuildData === 'undefined'
@@ -357,6 +359,7 @@ export class BuildkiteSidebarViewProvider
               const result = await resolveJobErrors(
                 this.latestBuild!,
                 message.jobId,
+                this.buildkiteClient,
                 triggeredBuildUrl,
               );
 

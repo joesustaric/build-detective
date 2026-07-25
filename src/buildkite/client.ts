@@ -73,16 +73,10 @@ export const DEFAULT_JOB_STATES_FILTER: BkState[] = [
 ];
 
 export class BuildkiteClient {
-  static instance: BuildkiteClient | null = null;
-
   private pipelineSlug: string;
   branch: string;
 
   constructor(pipelineSlug: string, branch: string) {
-    if (!BuildkiteClient.instance) {
-      BuildkiteClient.instance = this;
-    }
-
     this.pipelineSlug = pipelineSlug;
     this.branch = branch;
   }
