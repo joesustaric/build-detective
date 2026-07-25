@@ -14,6 +14,7 @@ pnpm-lock.yaml
 package-lock.json
 .mise.toml
 vsc-extension-quickstart.md
+CONTRIBUTING.md
 node_modules/**
 .gitignore
 **/*.test.js

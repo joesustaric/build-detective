@@ -20,10 +20,19 @@ info "Running preflight checks..."
 
 command -v gh   >/dev/null 2>&1 || error "'gh' CLI not found. Install with: brew install gh"
 command -v node >/dev/null 2>&1 || error "'node' not found. Install via mise: mise install"
+command -v op   >/dev/null 2>&1 || error "'op' (1Password CLI) not found. Install with: brew install --cask 1password-cli"
 "$REPO_ROOT/node_modules/.bin/vsce" --version >/dev/null 2>&1 \
   || error "'vsce' not found in node_modules. Run: pnpm install"
+"$REPO_ROOT/node_modules/.bin/ovsx" --version >/dev/null 2>&1 \
+  || error "'ovsx' not found in node_modules. Run: pnpm install"
 
 gh auth status >/dev/null 2>&1 || error "Not authenticated with gh. Run: gh auth login"
+
+info "Fetching publish tokens from 1Password..."
+VSCE_PAT=$(op read "op://Private/VS Code Marketplace/credential" 2>/dev/null) \
+  || error "Could not read the VS Code Marketplace token from 1Password (op://Private/VS Code Marketplace/credential). Create that item, or edit the op:// path in scripts/release.sh to match yours."
+OVSX_PAT=$(op read "op://Private/Open VSX/credential" 2>/dev/null) \
+  || error "Could not read the Open VSX token from 1Password (op://Private/Open VSX/credential). Create that item, or edit the op:// path in scripts/release.sh to match yours."
 
 if ! git diff --quiet || ! git diff --cached --quiet; then
   error "Working tree is not clean. Commit or stash your changes first."
@@ -58,15 +67,25 @@ info "Current version: $CURRENT_VERSION"
 
 echo ""
 echo "Bump type?"
-select BUMP_TYPE in major minor patch; do
-  [ -z "$BUMP_TYPE" ] && error "No bump type selected."
-  case $BUMP_TYPE in
-    major|minor|patch) break ;;
-    *) echo "Select 1, 2, or 3" ;;
-  esac
-done
+echo "  1) major"
+echo "  2) minor"
+echo "  3) patch"
+echo "  4) explicit version"
+read -rp "Select 1-4: " BUMP_CHOICE
 
-NEW_VERSION=$(node -e "
+case "$BUMP_CHOICE" in
+  1) BUMP_TYPE=major ;;
+  2) BUMP_TYPE=minor ;;
+  3) BUMP_TYPE=patch ;;
+  4) BUMP_TYPE=explicit ;;
+  *) error "Select 1, 2, 3, or 4" ;;
+esac
+
+if [ "$BUMP_TYPE" = "explicit" ]; then
+  read -rp "New version (e.g. 0.14.0): " NEW_VERSION
+  [[ "$NEW_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || error "Version must be in the form X.Y.Z"
+else
+  NEW_VERSION=$(node -e "
 const [major, minor, patch] = '$CURRENT_VERSION'.split('.').map(Number);
 if (isNaN(major) || isNaN(minor) || isNaN(patch)) {
   process.stderr.write('ERROR: could not parse version: $CURRENT_VERSION\n');
@@ -76,6 +95,7 @@ if ('$BUMP_TYPE' === 'major') console.log((major + 1) + '.0.0');
 else if ('$BUMP_TYPE' === 'minor') console.log(major + '.' + (minor + 1) + '.0');
 else console.log(major + '.' + minor + '.' + (patch + 1));
 ")
+fi
 
 info "Bumping $CURRENT_VERSION → $NEW_VERSION"
 
@@ -137,10 +157,21 @@ gh release create "v$NEW_VERSION" \
 
 info "GitHub Release v$NEW_VERSION published"
 
+# ── Publish to marketplaces ───────────────────────────────────────────────────
+info "Publishing to VS Code Marketplace..."
+"$REPO_ROOT/node_modules/.bin/vsce" publish --packagePath "$VSIX_FILE" -p "$VSCE_PAT"
+info "Published to VS Code Marketplace"
+
+info "Publishing to Open VSX..."
+"$REPO_ROOT/node_modules/.bin/ovsx" publish "$VSIX_FILE" -p "$OVSX_PAT"
+info "Published to Open VSX"
+
 # ── Cleanup ───────────────────────────────────────────────────────────────────
 [ -f "$VSIX_FILE" ] && rm "$VSIX_FILE"
 
 info "Cleaned up local .vsix"
 echo ""
 info "Release v$NEW_VERSION complete!"
-info "Install from: https://github.com/joesustaric/build-detective/releases/tag/v$NEW_VERSION"
+info "VS Code Marketplace: https://marketplace.visualstudio.com/items?itemName=joesustaric.build-detective"
+info "Open VSX: https://open-vsx.org/extension/joesustaric/build-detective"
+info "GitHub Release: https://github.com/joesustaric/build-detective/releases/tag/v$NEW_VERSION"

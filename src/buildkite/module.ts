@@ -178,7 +178,9 @@ export class BuildkiteSidebarViewProvider
 
     const hasBkCli = await this.buildkiteClient.hasCli();
     if (!hasBkCli) {
-      this.setStatusBarMessage('Buildkite CLI not found', 'error');
+      // No Buildkite CLI and no signal this repo uses Buildkite — stay quiet
+      // rather than nagging every git repo the user happens to open.
+      this.statusBar?.hide();
       return;
     }
 
