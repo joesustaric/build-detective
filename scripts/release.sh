@@ -29,10 +29,10 @@ command -v op   >/dev/null 2>&1 || error "'op' (1Password CLI) not found. Instal
 gh auth status >/dev/null 2>&1 || error "Not authenticated with gh. Run: gh auth login"
 
 info "Fetching publish tokens from 1Password..."
-VSCE_PAT=$(op read "op://Private/VS Code Marketplace/credential" 2>/dev/null) \
-  || error "Could not read the VS Code Marketplace token from 1Password (op://Private/VS Code Marketplace/credential). Create that item, or edit the op:// path in scripts/release.sh to match yours."
-OVSX_PAT=$(op read "op://Private/Open VSX/credential" 2>/dev/null) \
-  || error "Could not read the Open VSX token from 1Password (op://Private/Open VSX/credential). Create that item, or edit the op:// path in scripts/release.sh to match yours."
+VSCE_PAT=$(op read "op://Personal/VS Code Marketplace/credential" 2>/dev/null) \
+  || error "Could not read the VS Code Marketplace token from 1Password (op://Personal/VS Code Marketplace/credential). Create that item, or edit the op:// path in scripts/release.sh to match yours."
+OVSX_PAT=$(op read "op://Personal/Open VSX/credential" 2>/dev/null) \
+  || error "Could not read the Open VSX token from 1Password (op://Personal/Open VSX/credential). Create that item, or edit the op:// path in scripts/release.sh to match yours."
 
 if ! git diff --quiet || ! git diff --cached --quiet; then
   error "Working tree is not clean. Commit or stash your changes first."

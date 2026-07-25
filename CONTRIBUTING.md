@@ -92,7 +92,7 @@ pnpm exec vsce package
 **Prerequisites:**
 - [`gh` CLI](https://cli.github.com/) installed and authenticated (`gh auth login`)
 - [1Password CLI](https://developer.1password.com/docs/cli/) installed and signed in (`op`)
-- Two items in your `Private` 1Password vault, each holding a token in the `credential` field:
+- Two items in your `Personal` 1Password vault, each holding a token in the `credential` field:
   - `VS Code Marketplace` — an Azure DevOps PAT scoped to *Marketplace → Manage*, "all accessible organizations"
   - `Open VSX` — an access token from your Open VSX user settings
   - (Different vault or item names? Update the `op://` paths at the top of `scripts/release.sh`.)
