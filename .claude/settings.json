@@ -43,7 +43,8 @@
       "Bash(op read *)",
       "Bash(op vault *)",
       "Bash(op item *)",
-      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\([f.get\\('label'\\) for f in d.get\\('fields',[]\\)]\\)\")"
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\([f.get\\('label'\\) for f in d.get\\('fields',[]\\)]\\)\")",
+      "Bash(git fetch *)"
     ]
   }
 }
